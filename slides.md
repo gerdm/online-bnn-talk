@@ -15,8 +15,6 @@ Adaptation, uncertainty, **scalability**
 
 Gerardo Duran-Martin
 
-Oct 2023
-
 
 ---
 
@@ -519,3 +517,13 @@ Update of all parameters after a single step
 
 <img class="horizontal-center" width=500
      src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2013.png">
+
+---
+
+# Online BNNs
+### gerdm.github.io/online-bnn-talk
+
+<div class="centered">
+  <h2 style="line-height:100px;"> <a href="https://grrddm.notion.site/One-pass-learning-methods-for-training-Bayesian-neural-networks-a9133bf9e9574c49b8243d163414d447?pvs=4">📑 Notion notes </a></h2>
+  <h2> <a href="https://github.com/gerdm/rebayes-mini">💻 rebayes-mini</a></h2>
+</div>
