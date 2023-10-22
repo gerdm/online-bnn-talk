@@ -122,7 +122,7 @@ $$
 ## Example: linear filtering
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled.png">
 
 ---
 
@@ -144,12 +144,12 @@ $y = 1 + 2x + \epsilon$
 
 <div class="float-left">
 <img width=400
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%201.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%201.png">
 </div>
 
 <div class="float-right">
 <img width=400
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%202.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%202.png">
 </div>
 
 ---
@@ -204,7 +204,7 @@ $$
 Consider a three-hidden-layer MLP with 6 units in each layer and ELU activation unit
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf.gif">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf.gif">
 
 ---
 
@@ -214,12 +214,12 @@ We compare the performance of EKF on a neural network with $Q_t = 0 \cdot {\bf I
 
 <div class="float-left">
 <img width=400
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd1.gif">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd1.gif">
 </div>
 
 <div class="float-right">
 <img width=400
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd10.gif">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd10.gif">
 </div>
 
 ---
@@ -279,7 +279,7 @@ $$
 ## Example: BernKF on the Moon’s dataset
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/bern-ekf_(1).gif">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/bern-ekf_(1).gif">
 
 ---
 
@@ -348,7 +348,7 @@ Update cost in memory is $O(d^2 + Dd)$
 ## Example: intrinsic dimension on the moon’s dataset
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%203.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%203.png">
 
 ---
 
@@ -366,7 +366,7 @@ Update cost in memory is $O(d^2 + Dd)$
 Subspace dimension v.s. test accuracy
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%204.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%204.png">
 
 ---
 
@@ -375,7 +375,7 @@ Subspace dimension v.s. test accuracy
 % of total parameters v.s. % underperformance to Full-covariance EKF (no subspace)
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%205.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%205.png">
 
 ---
 
@@ -384,7 +384,7 @@ Subspace dimension v.s. test accuracy
 Online Fashion MNIST on a CNN
 
 <img class="horizontal-center" width=400
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%206.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%206.png">
 
 ---
 
@@ -403,7 +403,7 @@ Online Fashion MNIST on a CNN
 Let ${\bf A}_{i,j}\sim{\cal N}(0,1)$
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%207.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%207.png">
 
 ---
 
@@ -437,14 +437,14 @@ A = svd(params)[:, :d]
 ### Projected weights to $d=3$
 
 <img class="horizontal-center" width=400
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%208.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%208.png">
 
 ---
 
 ## Online Fashion MNIST (II)
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%209.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%209.png">
 
 ---
 
@@ -473,14 +473,14 @@ Update cost in memory is $O(d_\text{hidden}^2 + d_\text{last}^2+ Dd_\text{last})
 ## Online Fashion MNIST (III)
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2010.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2010.png">
 
 ---
 
 ## Online fashion MNIST (IV)
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2011.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2011.png">
 
 ---
 
@@ -505,7 +505,7 @@ with, ${\bf m}_t\in\mathbb{R}^D$, ${\bf A}_t\in\mathbb{R}^{D\times d}$, $\Upsilo
 ## Online Fashion MNIST (V)
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2012.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2012.png">
 
 ---
 
@@ -518,4 +518,4 @@ Update of all parameters after a single step
 ## Online fashion MNIST (VI)
 
 <img class="horizontal-center" width=500
-     src="One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2013.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2013.png">
