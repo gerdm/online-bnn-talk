@@ -15,7 +15,6 @@ Adaptation, uncertainty, **scalability**
 
 Gerardo Duran-Martin
 
-
 ---
 
 ## What do we mean by online learning?
@@ -30,8 +29,8 @@ $$
 
 ## Why online learning?
 
-- Cost of retraining models becomes expensive and practically infeasible for modern neural network architectures ([LoRA: Low-Rank Adaptation of Large Language Models \[2106.09685\]](https://www.notion.so/LoRA-Low-Rank-Adaptation-of-Large-Language-Models-2106-09685-6da3fc1579994b5391939fd0cee763b1?pvs=21))
-- For *******smaller******* datasets, e.g. in Finance, changes in the world bring about lower returns
+- Cost of retraining models becomes expensive and practically infeasible for modern neural network architectures
+- In time series datasets, e.g. in Finance, changes in the world and static parameters result in lower model performance.
 - Adaptation to the non-iid setting: gradual or abrupt changes
 
 ---
@@ -47,7 +46,7 @@ $$
 
 ---
 
-# State-space models
+# State-space models (SSMs)
 
 $$
 \begin{aligned}
@@ -58,7 +57,7 @@ $$
 
 ---
 
-# Filtering state-space models
+# Filtering an SSM
 
 In a filtering problem, we estimate the posterior distribution of the latent state given all past observations $y_{1:t}$
 
@@ -80,7 +79,7 @@ $$
 \begin{aligned}
 p(\boldsymbol\theta_t \vert \boldsymbol\theta_{t-1}) &= {\cal N}(\boldsymbol\theta_t \vert {\bf A}_t\boldsymbol\theta_{t-1}, {\bf Q}_t)\\
 p({\bf y}_t \vert \boldsymbol\theta_t) &=
-{\cal N}({\bf y}_t \vert {\bf B}_t\boldsymbol\theta_t, \boldsymbol{\bf R}_t)
+{\cal N}({\bf y}_t \vert {\bf H}_t\boldsymbol\theta_t, \boldsymbol{\bf R}_t)
 \end{aligned}
 $$
 
@@ -89,7 +88,7 @@ with
 - $\boldsymbol\theta_t \in \mathbb{R}^D$ The latent variable
 - ${\bf y}_t\in\mathbb{R}^C$ the target variable
 - ${\bf A} _t\in\mathbb{R}^{D\times D}$ the latent transition matrix
-- ${\bf B}_t\in\mathbb{R}^{C\times D}$ the projection matrix
+- ${\bf H}_t\in\mathbb{R}^{C\times D}$ the projection matrix
 - ${\bf Q}_t$ the dynamic’s covariance
 - ${\bf R}_t$ the emission covariance
 
@@ -98,6 +97,17 @@ with
 # The Kalman filter equations
 
 Solution in the example above is given by the **Kalman Filter (KF) equations.**
+
+### Predict step
+
+$$
+\begin{aligned}
+\bar{\bf m}_t &= {\bf A}_t{\bf m}_{t-1}\\
+\bar{\bf P}_t &= {\bf A}_t{\bf P}_{t-1}{\bf A}_t^\intercal + {\bf Q}_t
+\end{aligned}
+$$
+
+### Update step
 
 $$
 \begin{aligned}
@@ -109,7 +119,10 @@ $$
 \end{aligned}
 $$
 
-So that, at time $t$,
+---
+
+# Filtering
+At time $t$,
 
 $$
 p(\boldsymbol\theta_t \vert y_{1:t}) ={\cal N}(\boldsymbol\theta_t \vert {\bf m}_t, {\bf P}_t)
@@ -117,16 +130,66 @@ $$
 
 ---
 
-## Example: linear filtering
+## Example: tracking an object in 2d
+
+See §8.2.1.1 in Murphy, K. P. (2023). *Probabilistic machine learning: Advanced topics*. MIT press.Chicago
+
+### Setup
+
+Estimate the position of a moving object with position $(x_{t,1}, x_{t,2})$ and velocity $(\dot{x}_{1}, \dot{x}_{t,2})$. Assume fix and known $R_t$ and $Q_t$, then
+
+- Hidden (latent) state $\boldsymbol\theta_t = (x_{t,1}, x_{t,2}, \dot{x}_{t,1}, \dot{x}_{t,2})$
+- Observed variable $y_t$
+
+---
+
+## Example (cont'd)
+
+- Transition matrix
+
+$$
+A_t = \begin{bmatrix}
+1 & 0 & \Delta & 0\\
+0 & 1 & 0 & \Delta \\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+- Projection matrix
+
+$$
+{\bf H}_t = \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0
+\end{bmatrix}
+$$
+
+---
+
+### Tracked positions ($x_{t,1}, x_{t,2})$
+
+Observed position, true position, and filtered position.
 
 <img class="horizontal-center" width=500
      src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled.png">
 
 ---
 
-## From linear-state-space models to online linear regression
+# Linear regression as a state-space model
 
-Let ${\bf B}_t = {\bf x}_t^\intercal$ with ${\bf x}_t \in \mathbb{R}^M$, $Q_t = \gamma{\bf I}_D$, and ${\bf R}_t = \beta\in\mathbb{R}^+$.
+## Setup
+
+Suppose $y_t = 1 + 2x_t + \epsilon_t$ with $\epsilon_t\sim{\cal N}(0, 1)$
+
+<img class="horizontal-center" width=500
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%201.png">
+
+---
+
+## Rewriting the model as an SSM
+
+Let ${\bf H}_t = {\bf x}_t^\intercal$ with ${\bf x}_t = \begin{bmatrix}1 &x_t\end{bmatrix}^\intercal$, $Q_t = \gamma{\bf I}_D$, and ${\bf R}_t = \beta\in\mathbb{R}^+$.
 
 $$
 \begin{aligned}
@@ -137,22 +200,19 @@ $$
 
 ---
 
-## Example: linear regression as filtering
-$y = 1 + 2x + \epsilon$
+## Filtering results
 
-<div class="float-left">
-<img width=400
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%201.png">
-</div>
+Take $\gamma = 0$ (fixed latent state assumption) and $\beta = 1$ (known variance)
 
-<div class="float-right">
-<img width=400
+<img class="horizontal-center" width=500
      src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%202.png">
-</div>
+
+<img class="horizontal-center" width=500
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%203.png">
 
 ---
 
-## From linear regression to non-linear regression
+# From linear regression to non-linear regression
 
 Via neural networks
 
@@ -167,7 +227,7 @@ Where $f:\mathbb{R}^D\times\mathbb{R}^M\to\mathbb{R}^C$ is a non-linear function
 
 ---
 
-### Extended Kalman filter (EKF)
+## Extended Kalman filter (EKF)
 
 Linearising a neural network.
 
@@ -178,7 +238,7 @@ $$
 f(\boldsymbol\theta_t, {\bf x}_t) &\approx f({\bf m}_{t-1}, {\bf x}_t) + \nabla f({\bf m}_{t-1}, {\bf x}_t)^\intercal(\boldsymbol\theta_t - {\bf m}_{t-1})\\
 &= 
 \underbrace{
-\nabla f({\bf m}_{t-1}, {\bf x}_t)^\intercal}_{ {\bf B}_t}\boldsymbol\theta_t 
+\nabla f({\bf m}_{t-1}, {\bf x}_t)^\intercal}_{ {\bf H}_t}\boldsymbol\theta_t 
 +
 \overbrace{
 \left(f({\bf m}_{t-1}, {\bf x}_t) - \nabla f({\bf m}_{t-1}, {\bf x}_t)^\intercal{\bf m}_{t-1}\right)}^{ {\bf c}_t}
@@ -191,34 +251,28 @@ $$
 \begin{aligned}
 p(\boldsymbol\theta_t \vert \boldsymbol\theta_{t-1}) &= {\cal N}(\boldsymbol\theta_t \vert \boldsymbol\theta_{t-1}, {\bf Q}_t)\\
 p({\bf y}_t \vert \boldsymbol\theta_t) &=
-{\cal N}({\bf y}_t \vert {\bf B}_t\boldsymbol\theta_t + {\bf c}_t, \boldsymbol{\bf R}_t)
+{\cal N}({\bf y}_t \vert {\bf H}_t\boldsymbol\theta_t + {\bf c}_t, \boldsymbol{\bf R}_t)
 \end{aligned}
 $$
 
 ---
 
-## Example: EKF for neural network training
+### Example: EKF for neural network training
 
-Consider a three-hidden-layer MLP with 6 units in each layer and ELU activation unit
+Consider a three-hidden-layer MLP with 6 units in each layer and ELU activation unit. We show
 
-<img class="horizontal-center" width=500
+- Posterior predictive mean (purple line)
+- Samples from the posterior predictive mean (gray lines)
+- Observation at time $t$: white dots
+- Past observed points: blue dots
+
+--- 
+
+### Example (cont'd)
+    
+ <img class="horizontal-center" width=500
      src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf.gif">
-
----
-
-## EKF v.s. online gradient descent
-
-We compare the performance of EKF on a neural network with $Q_t = 0 \cdot {\bf I}$ to (i) online gradient descent (left) and (ii) replay-buffer gradient descent with buffer of 10 (right)
-
-<div class="float-left">
-<img width=400
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd1.gif">
-</div>
-
-<div class="float-right">
-<img width=400
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd10.gif">
-</div>
+    
 
 ---
 
@@ -228,19 +282,36 @@ We compare the performance of EKF on a neural network with $Q_t = 0 \cdot {\bf I
 - $y_t \in \{C_1, \ldots, C_K\}$ — Multinomial distribution
 - $y_t \in \mathbb{R}^+$ — Gamma distribution
 - $y_t \in [0, 1]$ — Beta distribution
+- $y_t \in \{0, 1, 2, \ldots\}$ — Poisson distribution
 
 ---
 
 ## Online inference of model parameters using any member of the exponential family
 
+A random variable $y\in\mathbb{R}^S$ is a member of the exponential-family if its probability density function can be written as
+
 $$
-\begin{aligned}
-p({\bf z}_t \vert {\bf z}_{t-1}) &= {\cal N}({\bf z}_t \vert {\bf z}_{t-1}, \gamma{\bf I}_D)\\
-p(y_t \vert {\bf z}_t) &= \text{expfam}(y_t \vert \eta({\bf z}_t, {\bf x}_t))
-\end{aligned}
+\log\text{expfam}(y \vert \eta(\boldsymbol\theta)) = \eta(\boldsymbol\theta)^\intercal \text{suffstat}(y) + b(y) + a(\eta(\boldsymbol\theta))
 $$
 
-with $\eta: \mathbb{R}^D\times\mathbb{R}^M \to \mathbb{R}^C$ the link function from model parameters and covariates to natural parameters.
+With
+
+- $\boldsymbol\theta\in\mathbb{R}^D$ the model parameters
+- $\eta: \mathbb{R}^D\to\mathbb{R}^S$ the link function from model parameters to natural parameters
+- $\text{suffstat}: \mathbb{R}^C \to \mathbb{R}^S$ the sufficient statistics for the random variable $y_t$
+- $a: \mathbb{R}^S\to\mathbb{R}$ the log-partition function
+- $b: \mathbb{R}^C \to \mathbb{R}$ the log-base measure
+
+---
+
+### SSMs for Gaussian latent variable and expfam target variable
+
+$$
+\begin{aligned}
+p(\boldsymbol\theta_t \vert \boldsymbol\theta_{t-1}) &= {\cal N}(\boldsymbol\theta_t \vert \boldsymbol\theta_{t-1}, \gamma{\bf I}_D)\\
+p(y_t \vert \boldsymbol\theta_t) &= \text{expfam}(y_t \vert \eta(\boldsymbol\theta_t, {\bf x}_t))
+\end{aligned}
+$$
 
 ---
 
@@ -248,18 +319,18 @@ with $\eta: \mathbb{R}^D\times\mathbb{R}^M \to \mathbb{R}^C$ the link function f
 
 See [Online Natural Gradient as a Kalman Filter \[1703.00209\]](https://www.notion.so/Online-Natural-Gradient-as-a-Kalman-Filter-1703-00209-841bd5d825eb4db690bb26b594b6fe8f?pvs=21)
 
-TL;DR: let target variable $y_t$ be the sufficient statistics  $\text{suffstat}(y_t)$ where $\text{suffstat}$ are the sufficient statistics for a random variable $y_t\sim\text{expfam}(\cdot)$ and $\eta(\boldsymbol\theta, {\bf x}_t)$ is the link function from model parameters to natural parameters.
+Idea: Let target variable $y_t$ be the sufficient statistics  $\text{suffstat}(y_t)$ where $\text{suffstat}$ are the sufficient statistics for a random variable $y_t\sim\text{expfam}(\cdot)$ and $\eta(\boldsymbol\theta, {\bf x}_t)$ is the link function from model parameters to natural parameters.
 
 ---
 
 ### Expfam EKF equations
 
-We make use of the fact that
+We make use of the fact that the log-partition $a(\cdot)$ satisfies
 
 $$
 \begin{aligned}
-\mathbb{E}[y_t\vert \eta_t] &= \frac{\partial}{\partial \eta_t} \log A(\eta_t)\\
-\text{Cov}(y_t\vert \eta_t) &= \frac{\partial^2}{\partial \eta_t^2}\log(A(\eta_t))
+\mathbb{E}[y_t\vert \eta_t] &= \frac{\partial}{\partial \eta_t} a(\eta_t)\\
+\text{Cov}(y_t\vert \eta_t) &= \frac{\partial^2}{\partial \eta_t^2}a(\eta_t)
 \end{aligned}
 $$
 
@@ -267,14 +338,20 @@ So that
 
 $$
 \begin{aligned}
-{\bf e}_t &= \text{suffstat}(y_t) - \mathbb{E}[y_t \vert \eta_t]\\
-{\bf R}_t &= \text{Cov}(y_t\vert\eta_t)
+{\color{crimson}{\bf e}_t} &= \text{suffstat}(y_t) - \mathbb{E}[y_t \vert \eta_t]\\
+{\color{teal}{\bf R}_t} &= \text{Cov}(y_t\vert\eta_t)\\
+{\bf S}_t &= {\bf H}_t\bar{\bf P}_t{\bf H}_{t}^\intercal + {\color{teal}{\bf R}_t}\\
+{\bf K}_t &= \bar{\bf P}_t{\bf H}_{t}^\intercal{\bf S}_t^{-1}\\ \\
+{\bf m}_t &= \bar{\bf m}_t + {\bf K}_t{\color{crimson}{\bf e}_t}\\
+{\bf P}_t &= \bar{\bf P}_t - {\bf K}_t{\bf S}_t {\bf K}_t^\intercal
 \end{aligned}
 $$
 
 ---
 
 ## Example: BernKF on the Moon’s dataset
+
+Model $y_t\sim\text{Bern}(f(\boldsymbol\theta_t, {\bf x}_t))$
 
 <img class="horizontal-center" width=500
      src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/bern-ekf_(1).gif">
@@ -286,6 +363,8 @@ $$
 - **Method is not scalable —** EKF takes $O(D^2)$ memory.
 
 For MNIST classification, using a 3-layered MLP with 300 units sized 32bits, a single update (one observation) would require more than 10,000gb in memory.
+
+- **Slow** — EKF takes $O(D^3)$ in time (matrix inversion)
 
 - **Moment-matched EKF not always stable:** Heteroskedastic Gaussian
 
@@ -346,7 +425,7 @@ Update cost in memory is $O(d^2 + Dd)$
 ## Example: intrinsic dimension on the moon’s dataset
 
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%203.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%204.png">
 
 ---
 
@@ -364,7 +443,7 @@ Update cost in memory is $O(d^2 + Dd)$
 Subspace dimension v.s. test accuracy
 
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%204.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%205.png">
 
 ---
 
@@ -373,16 +452,16 @@ Subspace dimension v.s. test accuracy
 % of total parameters v.s. % underperformance to Full-covariance EKF (no subspace)
 
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%205.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%206.png">
 
 ---
 
-# Benchmark
+# Benchmark: Online classification of **Fashion MNIST using a CNN**
 
-Online Fashion MNIST on a CNN
+Dataset example
 
 <img class="horizontal-center" width=400
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%206.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%207.png">
 
 ---
 
@@ -401,7 +480,7 @@ Online Fashion MNIST on a CNN
 Let ${\bf A}_{i,j}\sim{\cal N}(0,1)$
 
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%207.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%208.png">
 
 ---
 
@@ -435,14 +514,16 @@ A = svd(params)[:, :d]
 ### Projected weights to $d=3$
 
 <img class="horizontal-center" width=400
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%208.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%209.png">
 
 ---
 
 ## Online Fashion MNIST (II)
 
+Let ${\bf A}$ be the SVD-driven projection matrix
+
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%209.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2010.png">
 
 ---
 
@@ -464,21 +545,25 @@ $$
 
 with $\boldsymbol\theta_t = ({\bf w}_t, {\bf z}_t)$, ${\bf w}_t \in \reals^{d_\text{last}}$ the output layer of the neural network, and ${\bf z}\in\reals^{d_\text{hidden}}$ the projected (hidden) units.
 
-Update cost in memory is $O(d_\text{hidden}^2 + d_\text{last}^2+ Dd_\text{last})$
+Update cost in memory is $O(d_\text{hidden}^2 + d_\text{last}^2+ Dd_\text{hidden})$
 
 ---
 
 ## Online Fashion MNIST (III)
 
+Let ${\bf A}_{i,j} \sim {\cal N}(0, 1)$
+
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2010.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2011.png">
 
 ---
 
 ## Online fashion MNIST (IV)
 
+Let ${\bf A}$ be the SVD-driven projection matrix
+
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2011.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2012.png">
 
 ---
 
@@ -488,7 +573,7 @@ Update cost in memory is $O(d_\text{hidden}^2 + d_\text{last}^2+ Dd_\text{last})
 
 # LoFi: Low-rank (extended) Kalman filter
 
-(See [Low-rank extended Kalman filtering for online learning of neural networks from streaming data \[2305.19535\]](https://www.notion.so/Low-rank-extended-Kalman-filtering-for-online-learning-of-neural-networks-from-streaming-data-2305--8336aa5be8754ed3a9d63bfa84f03648?pvs=21))
+See [Low-rank extended Kalman filtering for online learning of neural networks from streaming data \[2305.19535\]](https://www.notion.so/Low-rank-extended-Kalman-filtering-for-online-learning-of-neural-networks-from-streaming-data-2305--8336aa5be8754ed3a9d63bfa84f03648?pvs=21)
 
 Embed the intrinsic-dimension hypothesis in the target distribution. At every timestep $t$, we estimate
 
@@ -496,27 +581,69 @@ $$
 q_t(\boldsymbol\theta_t) = {\cal N}(\boldsymbol\theta_t \vert {\bf m}_t, ({\bf A}_t{\bf A}_t^\intercal + \Upsilon_t)^{-1})
 $$
 
-with, ${\bf m}_t\in\mathbb{R}^D$, ${\bf A}_t\in\mathbb{R}^{D\times d}$, $\Upsilon_t = \text{diag}(\upsilon_1, \ldots, \upsilon_D)$
+with, 
+
+- ${\bf m}_t\in\mathbb{R}^D$ — mean,
+- ${\bf A}_t\in\mathbb{R}^{D\times d}$ — Low-rank part of covariance matrix
+- $\Upsilon_t = \text{diag}(\upsilon_1, \ldots, \upsilon_D)$ — Diagonal part of covariance matrix
 
 ---
 
 ## Online Fashion MNIST (V)
 
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2012.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2013.png">
 
 ---
 
-# What about Online SGD?
+# What about SGD?
+
+## Online SGD
 
 Update of all parameters after a single step
 
+$$
+\boldsymbol\theta_t = \boldsymbol\theta_{t-1} - \alpha_t\nabla_{\boldsymbol\theta}\log p(y_t | \boldsymbol\theta_{t-1}, {\bf x}_t) 
+$$
+
+## Replay-buffer SGD
+
+Store a buffer of the last $k$ datapoints
+
+$$
+\boldsymbol\theta_t = \boldsymbol\theta_{t-1} - \frac{\alpha_t}{k}\sum_{\tau=1}^k\nabla_{\boldsymbol\theta}\log p(y_{t-\tau} | \boldsymbol\theta_{t-1}, {\bf x}_{t-\tau})
+$$
+
 ---
 
-## Online fashion MNIST (VI)
+## Example: Full-covariance EKF v.s. online gradient descent
+
+We compare posterior predictive mean (EKF) on a neural network with $Q_t = 0 \cdot {\bf I}$ to (i) online gradient descent (left) and (ii) replay-buffer gradient descent with buffer of 10 (right)
+
+Despite simplicity, a good contender to EKF.
+
+<div class="float-left">
+<img class="horizontal-center" width=400
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd1.gif">
+</div>
+
+<div class="float-right">
+<img class="horizontal-center" width=400
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/ekf-osgd10.gif">
+</div>
+
+---
+
+## Online fashion MNIST (VI) — Final benchmark
 
 <img class="horizontal-center" width=500
-     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2013.png">
+     src="/One-pass%20learning%20methods%20for%20training%20Bayesian%20ne%20a9133bf9e9574c49b8243d163414d447/Untitled%2014.png">
+
+---
+
+# The takeaway
+
+- Online learning of Bayesian neural networks can be formulated as a filtering problem using state-space models
 
 ---
 
